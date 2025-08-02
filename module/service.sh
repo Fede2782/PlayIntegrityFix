@@ -12,7 +12,11 @@ resetprop_if_match vendor.boot.mode recovery unknown
 resetprop_if_diff ro.boot.selinux enforcing
 # use delete since it can be 0 or 1 for enforcing depending on OEM
 if [ -n "$(resetprop ro.build.selinux)" ]; then
-    resetprop --delete ro.build.selinux
+    if [ -n "$(resetprop ro.build.version.sep)" ]; then
+        resetprop_if_diff ro.build.selinux 1
+    else
+        resetprop --delete ro.build.selinux
+    fi
 fi
 # use toybox to protect stat access time reading
 if [ "$(toybox cat /sys/fs/selinux/enforce)" = "0" ]; then
